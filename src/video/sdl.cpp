@@ -798,12 +798,9 @@ void RealizeVideoMemory()
 		return;
 	}
 	if (NumRects) {
-		//SDL_UpdateWindowSurfaceRects(TheWindow, Rects, NumRects);
 		SDL_UpdateTexture(TheTexture, NULL, TheScreen->pixels, TheScreen->pitch);
 		if (!RenderWithShader(TheRenderer, TheWindow, TheTexture)) {
-			SDL_RenderClear(TheRenderer);
-			//for (int i = 0; i < NumRects; i++)
-			//    SDL_UpdateTexture(TheTexture, &Rects[i], TheScreen->pixels, TheScreen->pitch);
+			SDL_SetTextureBlendMode(TheTexture, SDL_BLENDMODE_BLEND);
 			SDL_RenderCopy(TheRenderer, TheTexture, NULL, NULL);
 			if (EnableDebugPrint) {
 				// show a bar representing fps scaled by 10
@@ -815,8 +812,11 @@ void RealizeVideoMemory()
 				LastTick = nextTick;
 			}
 			SDL_RenderPresent(TheRenderer);
+			// SDL_RenderClear(TheRenderer);
 		}
 		NumRects = 0;
+	} else {
+		SDL_RenderPresent(TheRenderer);
 	}
 	HideCursor();
 }
